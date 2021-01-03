@@ -52,9 +52,9 @@ def optimize_remap(vir):
 
 class Runner:
     def __init__(self):
-        self.vir = open("codons_virus.txt").read().splitlines()
-        self.vax = open("codons_tozinameran.txt").read().splitlines()
-        # self.vax = open('codons_zorecimeran.txt').read().splitlines()
+        self.vir = open("codons/virus.txt").read().splitlines()
+        self.vax = open("codons/tozinameran.txt").read().splitlines()
+        # self.vax = open('codons/zorecimeran.txt').read().splitlines()
 
     def compute_match(self, seq0, seq1, seq2):
         if len(seq0) != len(seq1) or len(seq1) != len(seq2):

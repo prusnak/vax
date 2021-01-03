@@ -1,6 +1,6 @@
-vir = open("codons_virus.txt").read().splitlines()
-vax_tozinameran = open("codons_tozinameran.txt").read().splitlines()
-vax_zorecimeran = open("codons_zorecimeran.txt").read().splitlines()
+vir = open("codons/virus.txt").read().splitlines()
+vax_tozinameran = open("codons/tozinameran.txt").read().splitlines()
+vax_zorecimeran = open("codons/zorecimeran.txt").read().splitlines()
 
 assert len(vir) == len(vax_tozinameran)
 assert len(vax_tozinameran) == len(vax_zorecimeran)
