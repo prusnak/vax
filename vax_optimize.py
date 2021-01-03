@@ -2,6 +2,10 @@ from dnachisel import *
 from dnachisel import biotools
 import python_codon_tables as pct
 
+species = 'h_sapiens'
+# species = '10090' # Mus musculus
+# species = '57486' # Mus musculus molossinus
+# species = '9544' # Macaca mulatta
 
 def sequence_codons(seq):
     assert len(seq) % 3 == 0
@@ -20,7 +24,7 @@ def optimize_dnachisel(vir):
             # AvoidHairpins(stem_size=20, hairpin_window=1000),
         ],
         objectives=[
-            MaximizeCAI(species='h_sapiens'),
+            MaximizeCAI(species=species),
          ],
     )
 
@@ -36,7 +40,7 @@ def optimize_dnachisel(vir):
 
 
 def optimize_remap(vir):
-    ct = pct.get_codons_table("h_sapiens")
+    ct = pct.get_codons_table(species)
     r = []
     for a in vir:
         b = biotools.translate(a)
