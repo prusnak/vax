@@ -2,15 +2,16 @@ from dnachisel import *
 from dnachisel import biotools
 import python_codon_tables as pct
 
-species = 'h_sapiens'
-# species = '10090' # Mus musculus
-# species = '57486' # Mus musculus molossinus
-# species = '9544' # Macaca mulatta
+species = "h_sapiens"
+# species = "10090"  # Mus musculus
+# species = "57486"  # Mus musculus molossinus
+# species = "9544"   # Macaca mulatta
+
 
 def sequence_codons(seq):
     assert len(seq) % 3 == 0
     for i in range(0, len(seq), 3):
-        yield seq[i:i + 3]
+        yield seq[i : i + 3]
 
 
 def optimize_dnachisel(vir):
@@ -25,7 +26,7 @@ def optimize_dnachisel(vir):
         ],
         objectives=[
             MaximizeCAI(species=species),
-         ],
+        ],
     )
 
     # problem.mutations_per_iterations = 10000
@@ -50,12 +51,11 @@ def optimize_remap(vir):
 
 
 class Runner:
-
     def __init__(self):
-        self.vir = open('codons_virus.txt').read().splitlines()
-        self.vax = open('codons_tozinameran.txt').read().splitlines()
+        self.vir = open("codons_virus.txt").read().splitlines()
+        self.vax = open("codons_tozinameran.txt").read().splitlines()
         # self.vax = open('codons_zorecimeran.txt').read().splitlines()
- 
+
     def compute_match(self, seq0, seq1, seq2):
         if len(seq0) != len(seq1) or len(seq1) != len(seq2):
             raise ValueError("length mismatch")
@@ -76,7 +76,15 @@ class Runner:
         return good / len(seq1)
 
     def average_runs(self, func, iters=10):
-        score = sum([self.compute_match(self.vir, self.vax, func(self.vir)) for _ in range(iters)]) / iters
+        score = (
+            sum(
+                [
+                    self.compute_match(self.vir, self.vax, func(self.vir))
+                    for _ in range(iters)
+                ]
+            )
+            / iters
+        )
         print(f"{func.__name__} : {score:.2%}")
         return score
 
