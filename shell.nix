@@ -1,6 +1,6 @@
 with import <nixpkgs> { };
 
-let MyPython = python3.withPackages(ps: with ps; [ dnachisel ipython ]);
+let MyPython = python3.withPackages(ps: with ps; [ black dnachisel ipython ]);
 
 in
 
