@@ -2,8 +2,8 @@ from dnachisel import *
 from dnachisel import biotools
 import python_codon_tables as pct
 
-species = "h_sapiens"
-# species = "10090"  # Mus musculus
+# species = "9606" # Homo sapiens
+species = "10090"  # Mus musculus
 # species = "57486"  # Mus musculus molossinus
 # species = "9544"   # Macaca mulatta
 
@@ -56,12 +56,11 @@ class Runner:
         self.vax = open("codons/tozinameran.txt").read().splitlines()
         # self.vax = open('codons/zorecimeran.txt').read().splitlines()
 
-    def compute_match(self, seq0, seq1, seq2):
+    def compute_match(self, seq0, seq1, seq2, compare_bases=False):
         if len(seq0) != len(seq1) or len(seq1) != len(seq2):
             raise ValueError("length mismatch")
         good = 0
-        # compare whole codons (False) or individual bases (True)
-        if False:
+        if compare_bases:  # False = compare_codons
             seq0 = "".join(seq0)
             seq1 = "".join(seq1)
             seq2 = "".join(seq2)
@@ -75,22 +74,19 @@ class Runner:
                 pass
         return good / len(seq1)
 
-    def average_runs(self, func, iters=10):
-        score = (
-            sum(
-                [
-                    self.compute_match(self.vir, self.vax, func(self.vir))
-                    for _ in range(iters)
-                ]
-            )
-            / iters
-        )
-        print(f"{func.__name__} : {score:.2%}")
-        return score
+    def average_runs(self, func, iters=20):
+        score_codons, score_bases = 0.0, 0.0
+        for _ in range(iters):
+            v = func(self.vir)
+            score_codons += self.compute_match(self.vir, self.vax, v)
+            score_bases += self.compute_match(self.vir, self.vax, v, compare_bases=True)
+        score_codons /= iters
+        score_bases /= iters
+        print(f"{func.__name__} : {score_codons:.2%} {score_bases:.2%}")
 
 
 run = Runner()
 
-run.average_runs(optimize_dnachisel, 5)
+run.average_runs(optimize_dnachisel)
 
-run.average_runs(optimize_remap, 1)
+run.average_runs(optimize_remap)
