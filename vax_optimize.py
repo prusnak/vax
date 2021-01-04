@@ -2,8 +2,8 @@ from dnachisel import *
 from dnachisel import biotools
 import python_codon_tables as pct
 
-# species = "9606" # Homo sapiens
-species = "10090"  # Mus musculus
+species = "9606"  # Homo sapiens
+# species = "10090"  # Mus musculus
 # species = "57486"  # Mus musculus molossinus
 # species = "9544"   # Macaca mulatta
 
@@ -40,7 +40,7 @@ def optimize_dnachisel(vir):
     return list(sequence_codons(problem.sequence))
 
 
-def optimize_remap(vir):
+def optimize_remap_pct(vir):
     ct = pct.get_codons_table(species)
     r = []
     for a in vir:
@@ -48,6 +48,72 @@ def optimize_remap(vir):
         t = [(k, v) for k, v in sorted(ct[b].items(), key=lambda i: i[1], reverse=True)]
         r.append(t[0][0])
     return r
+
+
+def optimize_remap_harpel(vir):
+    remap = {
+        "ATG": "ATG",
+        "TTT": "TTC",
+        "GTT": "GTG",
+        "CTT": "CTG",
+        "TTA": "CTG",
+        "TTG": "CTG",
+        "CCA": "CCC",
+        "CTA": "CTG",
+        "GTC": "GTG",
+        "TCT": "AGC",
+        "AGT": "AGC",
+        "CAG": "CAG",
+        "TGT": "TGC",
+        "AAT": "AAC",
+        "ACA": "ACC",
+        "ACC": "ACC",
+        "AGA": "AGA",
+        "ACT": "ACC",
+        "CAA": "CAG",
+        "CCC": "CCC",
+        "CCT": "CCT",
+        "GCA": "GCC",
+        "TAC": "TAC",
+        "TTC": "TTC",
+        "CGT": "AGA",
+        "GGT": "GGC",
+        "TAT": "TAC",
+        "GAC": "GAC",
+        "AAA": "AAG",
+        "TCC": "AGC",
+        "TCA": "AGC",
+        "CAT": "CAC",
+        "TGG": "TGG",
+        "GCT": "GCC",
+        "ATA": "ATC",
+        "GGG": "GGA",
+        "AAG": "AAG",
+        "AGG": "CGG",
+        "GAT": "GAC",
+        "AAC": "AAC",
+        "GAG": "GAG",
+        "GGC": "GGC",
+        "ATT": "ATC",
+        "TCG": "AGC",
+        "GAA": "GAG",
+        "CAC": "CAC",
+        "GCG": "GCC",
+        "TGC": "TGC",
+        "GGA": "GGC",
+        "GTG": "GTG",
+        "ACG": "ACC",
+        "CTC": "CTG",
+        "GTA": "GTG",
+        "ATC": "ATC",
+        "GCC": "GCC",
+        "AGC": "AGC",
+        "CTG": "CTG",
+        "CGG": "CGG",
+        "CGC": "CGG",
+        "TAA": "TGA",
+    }
+    return [remap[c] for c in vir]
 
 
 class Runner:
@@ -87,6 +153,8 @@ class Runner:
 
 run = Runner()
 
-run.average_runs(optimize_dnachisel)
+# run.average_runs(optimize_dnachisel)
 
-run.average_runs(optimize_remap)
+run.average_runs(optimize_remap_pct)
+
+run.average_runs(optimize_remap_harpel)
