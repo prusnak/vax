@@ -67,11 +67,6 @@ def optimize_remap_remap6(vir):
 
 
 class Runner:
-    def __init__(self):
-        self.vir = open("codons/virus.txt").read().splitlines()
-        self.vax = open("codons/tozinameran.txt").read().splitlines()
-        # self.vax = open('codons/zorecimeran.txt').read().splitlines()
-
     def compute_match(self, seq0, seq1, seq2, compare_bases=False):
         if len(seq0) != len(seq1) or len(seq1) != len(seq2):
             raise ValueError("length mismatch")
@@ -90,23 +85,27 @@ class Runner:
                 pass
         return good / len(seq1)
 
-    def average_runs(self, func, iters=20):
+    def average_runs(self, virus, vaccine, func, iters=20):
+        vir = open(f"codons/{virus}.txt").read().splitlines()
+        vax = open(f"codons/{vaccine}.txt").read().splitlines()
+
         score_codons, score_bases = 0.0, 0.0
         for _ in range(iters):
-            v = func(self.vir)
-            score_codons += self.compute_match(self.vir, self.vax, v)
-            score_bases += self.compute_match(self.vir, self.vax, v, compare_bases=True)
+            v = func(vir)
+            score_codons += self.compute_match(vir, vax, v)
+            score_bases += self.compute_match(vir, vax, v, compare_bases=True)
         score_codons /= iters
         score_bases /= iters
-        print(f"{func.__name__} : {score_codons:.2%} {score_bases:.2%}")
+        print(
+            f"{func.__name__}({virus}->{vaccine}): codons={score_codons:.2%} bases={score_bases:.2%}"
+        )
 
 
 run = Runner()
 
-run.average_runs(optimize_dnachisel)
-
-run.average_runs(optimize_remap_pct)
-
-run.average_runs(optimize_remap_remap3)
-
-run.average_runs(optimize_remap_remap6)
+vir = "virus"
+for vax in ["tozinameran", "zorecimeran"]:
+    run.average_runs(vir, vax, optimize_dnachisel)
+    run.average_runs(vir, vax, optimize_remap_pct)
+    run.average_runs(vir, vax, optimize_remap_remap3)
+    run.average_runs(vir, vax, optimize_remap_remap6)
